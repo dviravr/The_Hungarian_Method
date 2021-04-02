@@ -6,7 +6,7 @@ public class GraphFrame extends JFrame {
 
    public GraphFrame(BipartiteGraph graph) {
       this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
+      this.setLocation(150, 75);
       this.setSize(1200, 700);
       this.setBackground(Color.WHITE);
       this.setTitle("The Hungarian Method");

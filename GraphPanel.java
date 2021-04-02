@@ -11,10 +11,13 @@ public class GraphPanel extends JPanel {
    Hungarian _hungarian;
    BipartiteGraph _graph;
    JButton _start;
+   GraphPanel _gp;
+
    private final HashMap<Node, int[]> _pos = new HashMap<>();
 
    public GraphPanel(BipartiteGraph graph) {
-      _hungarian = new Hungarian(graph, this);
+      _gp = this;
+      _hungarian = new Hungarian(graph, _gp);
       _graph = graph;
       _start = new JButton("Start Algorithm");
       _start.setFont(new Font("Ariel", Font.PLAIN, 20));
@@ -72,7 +75,7 @@ public class GraphPanel extends JPanel {
       for (Node n : _graph.getV()) {
          drawNode(n, g);
          for (Edge e : _graph.getE(n.getKey())) {
-            g.setColor(Color.black);
+            g.setColor(Color.gray);
             if (_hungarian.getM().contains(e)) {
                g.setColor(Color.red);
             }
@@ -97,16 +100,19 @@ public class GraphPanel extends JPanel {
    }
 
    private void drawEdge(Edge edge, Graphics g) {
+      Graphics2D g2 = (Graphics2D) g;
+      g2.setStroke(new BasicStroke(3));
       int x1 = _pos.get(edge.getNode1())[0];
       int y1 = _pos.get(edge.getNode1())[1];
       int x2 = _pos.get(edge.getNode2())[0];
       int y2 = _pos.get(edge.getNode2())[1];
-      g.drawLine(x1, y1, x2, y2);
+      g2.drawLine(x1, y1, x2, y2);
    }
 
    private class ListenForButton implements ActionListener {
       public void actionPerformed(ActionEvent e) {
          if (e.getSource() == _start) {
+            _hungarian = new Hungarian(_graph, _gp);
             _hungarian.theHungarianMethod();
          }
       }

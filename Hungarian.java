@@ -1,5 +1,6 @@
 package algo2.The_Hungarian_Method;
 
+import javax.swing.*;
 import java.util.*;
 
 public class Hungarian {
@@ -22,23 +23,25 @@ public class Hungarian {
       return _M;
    }
 
-   public ArrayList<Edge> theHungarianMethod() {
-      ArrayList<Edge> newMatch = mAugmentingPath();
-      while (newMatch != null) {
-         addMatchToM(newMatch);
-         try {
-            Thread.sleep(2000);
+   public void theHungarianMethod() {
+      new SwingWorker() {
+         @Override
+         protected Object doInBackground() throws Exception {
+            ArrayList<Edge> newMatch = mAugmentingPath();
+            while (newMatch != null) {
+               _gp.repaint();
+               Thread.sleep(2000);
+               addMatchToM(newMatch);
+               _Am = setAm();
+               _Bm = setBm();
+               newMatch = mAugmentingPath();
+            }
+            System.out.println(_M);
             _gp.repaint();
-         } catch (InterruptedException ignored) {
+            System.out.println("end of algorithm");
+            return null;
          }
-         _Am = setAm();
-         _Bm = setBm();
-         newMatch = mAugmentingPath();
-      }
-      System.out.println(_M);
-      _gp.repaint();
-      System.out.println("end of algorithm");
-      return _M;
+      }.execute();
    }
 
    private Set<Integer> setAm() {

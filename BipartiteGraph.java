@@ -44,20 +44,13 @@ public class BipartiteGraph {
       return _graphNodes.values();
    }
 
-   public Set<Integer> getGroupA() {
-      Set<Integer> A = new HashSet<>();
+   /* get all nodes id's from specific group */
+   public Set<Integer> getGroup(Node.GroupEnum groupEnum) {
+      Set<Integer> group = new HashSet<>();
       for (Node node : getV()) {
-         if (node.getGroup() == Node.GroupEnum.GROUP_A) A.add(node.getKey());
+         if (node.getGroup() == groupEnum) group.add(node.getKey());
       }
-      return A;
-   }
-
-   public Set<Integer> getGroupB() {
-      Set<Integer> B = new HashSet<>();
-      for (Node node : getV()) {
-         if (node.getGroup() == Node.GroupEnum.GROUP_B) B.add(node.getKey());
-      }
-      return B;
+      return group;
    }
 
    public Collection<Edge> getE(int key) {

@@ -10,7 +10,7 @@ public class GraphPanel extends JPanel {
 
    Hungarian _hungarian;
    BipartiteGraph _graph;
-   JButton _start;
+   JButton _start, _stepByStep;
    GraphPanel _gp;
 
    private final HashMap<Node, int[]> _pos = new HashMap<>();
@@ -20,9 +20,13 @@ public class GraphPanel extends JPanel {
       _hungarian = new Hungarian(graph, _gp);
       _graph = graph;
       _start = new JButton("Start Algorithm");
+      _stepByStep = new JButton("Step By Step");
       _start.setFont(new Font("Ariel", Font.PLAIN, 20));
+      _stepByStep.setFont(new Font("Ariel", Font.PLAIN, 20));
       this.add(_start);
+      this.add(_stepByStep);
       _start.addActionListener(new ListenForButton());
+      _stepByStep.addActionListener(new ListenForButton());
    }
 
    public void paint(Graphics g) {
@@ -51,10 +55,11 @@ public class GraphPanel extends JPanel {
       drawGraph(g);
    }
 
+//   setting a position for all nodes
    private void setPosition(int w, int h) {
       int aIndex = 1, bIndex = 1;
-      int flowXA = w / (_graph.getGroupA().size() + 1);
-      int flowXB = w / (_graph.getGroupB().size() + 1);
+      int flowXA = w / (_graph.getGroup(Node.GroupEnum.GROUP_A).size() + 1);
+      int flowXB = w / (_graph.getGroup(Node.GroupEnum.GROUP_B).size() + 1);
       int flowYA = h / 3;
       int flowYB = h / 3 * 2;
 
@@ -112,8 +117,9 @@ public class GraphPanel extends JPanel {
    private class ListenForButton implements ActionListener {
       public void actionPerformed(ActionEvent e) {
          if (e.getSource() == _start) {
-            _hungarian = new Hungarian(_graph, _gp);
-            _hungarian.theHungarianMethod();
+            _hungarian.theHungarianMethod(false);
+         } else if (e.getSource() == _stepByStep) {
+            _hungarian.theHungarianMethod(true);
          }
       }
    }

@@ -15,25 +15,31 @@ public class Hungarian {
       _graph = graph;
       _gp = gp;
       _M = new ArrayList<>();
-      _Am = graph.getGroupA();
-      _Bm = graph.getGroupB();
+      _Am = graph.getGroup(Node.GroupEnum.GROUP_A);
+      _Bm = graph.getGroup(Node.GroupEnum.GROUP_B);
    }
 
    public ArrayList<Edge> getM() {
       return _M;
    }
 
-   public void theHungarianMethod() {
+   /* finding the max match using the Hungarian Method */
+   public void theHungarianMethod(boolean stepByStep) {
+      _Am = _graph.getGroup(Node.GroupEnum.GROUP_A);
+      _Bm = _graph.getGroup(Node.GroupEnum.GROUP_B);
+      _M.clear();
       new SwingWorker() {
          @Override
          protected Object doInBackground() throws Exception {
             ArrayList<Edge> newMatch = mAugmentingPath();
             while (newMatch != null) {
-               _gp.repaint();
-               Thread.sleep(2000);
+               if (stepByStep) {
+                  _gp.repaint();
+                  Thread.sleep(1500);
+               }
                addMatchToM(newMatch);
-               _Am = setAm();
-               _Bm = setBm();
+               _Am = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_A));
+               _Bm = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_B));
                newMatch = mAugmentingPath();
             }
             System.out.println(_M);
@@ -44,26 +50,18 @@ public class Hungarian {
       }.execute();
    }
 
-   private Set<Integer> setAm() {
-      Set<Integer> Am = new HashSet<>();
-      for (Integer node : _graph.getGroupA()) {
+   /* setting a new group of all nodes that don't have any match in a specific group */
+   private Set<Integer> setUnsaturatedGroup(Set<Integer> group) {
+      Set<Integer> unsaturatedGroup = new HashSet<>();
+      for (Integer node : group) {
          if (!isSaturated(node)) {
-            Am.add(node);
+            unsaturatedGroup.add(node);
          }
       }
-      return Am;
+      return unsaturatedGroup;
    }
 
-   private Set<Integer> setBm() {
-      Set<Integer> Bm = new HashSet<>();
-      for (Integer node : _graph.getGroupB()) {
-         if (!isSaturated(node)) {
-            Bm.add(node);
-         }
-      }
-      return Bm;
-   }
-
+   /* check if specific node have a match */
    private boolean isSaturated(int node) {
       for (Edge edge : _M) {
          if (node == edge.getNode1().getKey() || node == edge.getNode2().getKey()) return true;
@@ -72,6 +70,7 @@ public class Hungarian {
    }
 
 
+   /* adding or replacing the new matches that found */
    private void addMatchToM(ArrayList<Edge> newMatch) {
       for (Edge edge : newMatch) {
          if (_M.contains(edge)) {
@@ -82,6 +81,7 @@ public class Hungarian {
       }
    }
 
+   /* check if there is a path from group A to group B and that both nodes don't have a match on the diGraph*/
    private ArrayList<Edge> mAugmentingPath() {
       BipartiteDiGraph diGraph = toDiGraph();
       for (Integer src : _Am) {
@@ -95,6 +95,9 @@ public class Hungarian {
       return null;
    }
 
+   /* Take BipartiteGraph and rebuild him as BipartiteDiGraph in specific order.
+   *  If the edge is part of the match, the direction is from group B to group A,
+   *  else the direction is from A to B*/
    private BipartiteDiGraph toDiGraph() {
       BipartiteDiGraph diGraph = new BipartiteDiGraph();
       for (Node node : _graph.getV()) {
@@ -132,6 +135,7 @@ public class Hungarian {
                /*
                 checking if we visited this neighbor
                 if not we adding him to the queue and setting to visited
+                and add the edge to the path
                 */
                queue.add(edge.getNode2());
                edge.getNode2().setVisited(true);
@@ -165,6 +169,7 @@ public class Hungarian {
    }
 
    private void resetVisited(BipartiteDiGraph graph) {
+//      reset all the visited values to false
       for (Node node : graph.getV()) {
          node.setVisited(false);
       }

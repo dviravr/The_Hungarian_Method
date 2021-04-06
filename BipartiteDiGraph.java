@@ -47,10 +47,6 @@ public class BipartiteDiGraph {
       return _graphNodes.values();
    }
 
-   public HashMap<Integer, Node> getGraphNodes() {
-      return _graphNodes;
-   }
-
    public Collection<Edge> getE(int node_id) {
       if (hasNode(node_id)) {
          return _graphEdges.get(node_id).values();

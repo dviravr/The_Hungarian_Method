@@ -1,5 +1,3 @@
-package algo2.The_Hungarian_Method;
-
 import javax.swing.*;
 import java.util.*;
 

@@ -64,7 +64,7 @@ public class BipartiteGraph {
 //         if the node exist in the graph and removing all his edges
 //         first, removing all of the edges that the node is the dest node
          edgeSize -= _graphEdges.get(key).size();
-         for (int ni : _graphEdges.get(key).keySet()) {
+         for (int ni : new HashSet<>(_graphEdges.get(key).keySet())) {
             removeEdge(key, ni);
          }
 //         after he isn't the dest of any node removing him from the graph

@@ -18,6 +18,12 @@ public class Edge {
       return _node2;
    }
 
+   public Node getNi(Node n1) {
+      if (n1.equals(_node1)) return _node2;
+      if (n1.equals(_node2)) return _node1;
+      else return null;
+   }
+
    @Override
    public boolean equals(Object o) {
       if (this == o) return true;

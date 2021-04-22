@@ -129,15 +129,16 @@ public class Hungarian {
          if (node.equals(dest))
             break;
          for (Edge edge : diGraph.getE(node.getKey())) {
-            if (!edge.getNode2().isVisited()) {
+            Node ni = edge.getNi(node);
+            if (!ni.isVisited()) {
                /*
                 checking if we visited this neighbor
                 if not we adding him to the queue and setting to visited
                 and add the edge to the path
                 */
-               queue.add(edge.getNode2());
-               edge.getNode2().setVisited(true);
-               path.put(edge.getNode2(), edge.getNode1());
+               queue.add(ni);
+               ni.setVisited(true);
+               path.put(ni, node);
             }
          }
       }

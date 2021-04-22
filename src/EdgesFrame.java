@@ -53,7 +53,7 @@ public class EdgesFrame extends JFrame {
          groupABox.add(rb);
       }
 
-      for (Integer n : graph.getGroup(Node.GroupEnum.GROUP_A)) {
+      for (Integer n : graph.getGroup(Node.GroupEnum.GROUP_B)) {
          JRadioButton rb = new JRadioButton(String.valueOf(n));
          _buttonGroupB.add(rb);
          groupBBox.add(rb);

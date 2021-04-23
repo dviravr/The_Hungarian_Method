@@ -4,7 +4,7 @@ import java.util.*;
 public class Hungarian {
 
    private final BipartiteGraph _graph;
-   private final ArrayList<Edge> _M;
+   private final ArrayList<Edge> _M = new ArrayList<>();
    private Set<Integer> _Am;
    private Set<Integer> _Bm;
    private final GraphPanel _gp;
@@ -12,20 +12,22 @@ public class Hungarian {
    public Hungarian(BipartiteGraph graph, GraphPanel gp) {
       _graph = graph;
       _gp = gp;
-      _M = new ArrayList<>();
-      _Am = graph.getGroup(Node.GroupEnum.GROUP_A);
-      _Bm = graph.getGroup(Node.GroupEnum.GROUP_B);
+      resetAlgo();
    }
 
    public ArrayList<Edge> getM() {
       return _M;
    }
 
-   /* finding the max match using the Hungarian Method */
-   public void theHungarianMethod(boolean stepByStep) {
+   void resetAlgo() {
       _Am = _graph.getGroup(Node.GroupEnum.GROUP_A);
       _Bm = _graph.getGroup(Node.GroupEnum.GROUP_B);
       _M.clear();
+   }
+
+   /* finding the max match using the Hungarian Method */
+   public void theHungarianMethod(boolean stepByStep, int msToSleep) {
+      resetAlgo();
       new SwingWorker() {
          @Override
          protected Object doInBackground() throws Exception {
@@ -33,7 +35,8 @@ public class Hungarian {
             while (newMatch != null) {
                if (stepByStep) {
                   _gp.repaint();
-                  Thread.sleep(1500);
+                  Thread.sleep(msToSleep);
+                  System.out.println(msToSleep);
                }
                addMatchToM(newMatch);
                _Am = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_A));
@@ -102,11 +105,13 @@ public class Hungarian {
          diGraph.addNode(node);
       }
       for (Node node : _graph.getV()) {
-         for (Edge edge : _graph.getE(node.getKey())) {
-            if (_M.contains(edge)) {
-               diGraph.connect(edge.getNode2().getKey(), edge.getNode1().getKey());
-            } else {
-               diGraph.connect(edge.getNode1().getKey(), edge.getNode2().getKey());
+         if (node.getGroup() == Node.GroupEnum.GROUP_A) {
+            for (Edge edge : _graph.getE(node.getKey())) {
+               if (_M.contains(edge)) {
+                  diGraph.connect(edge.getNi(node).getKey(), node.getKey());
+               } else {
+                  diGraph.connect(node.getKey(), edge.getNi(node).getKey());
+               }
             }
          }
       }

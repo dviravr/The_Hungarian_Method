@@ -1,6 +1,4 @@
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -235,9 +233,13 @@ public class GraphPanel extends JPanel {
    private class ListenForButton implements ActionListener {
       public void actionPerformed(ActionEvent e) {
          if (e.getSource() == _start) {
-            _hungarian.theHungarianMethod(false, _msToSleep);
+            _hungarian.setStepByStep(false);
+            _hungarian.theHungarianMethod();
          } else if (e.getSource() == _stepByStep) {
-            _hungarian.theHungarianMethod(true, _msToSleep);
+            Thread t = new Thread(_hungarian);
+            _hungarian.setStepByStep(true);
+            _hungarian.setMsToSleep(_msToSleep);
+            t.start();
          } else if (e.getSource() == _help) {
             JOptionPane.showMessageDialog(null, """
                         To add nodes click on the add buttons

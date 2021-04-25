@@ -1,13 +1,15 @@
 import javax.swing.*;
 import java.util.*;
 
-public class Hungarian {
+public class Hungarian implements Runnable {
 
    private final BipartiteGraph _graph;
    private final ArrayList<Edge> _M = new ArrayList<>();
    private Set<Integer> _Am;
    private Set<Integer> _Bm;
    private final GraphPanel _gp;
+   private boolean _stepByStep = false;
+   private int _msToSleep = 1500;
 
    public Hungarian(BipartiteGraph graph, GraphPanel gp) {
       _graph = graph;
@@ -15,8 +17,20 @@ public class Hungarian {
       resetAlgo();
    }
 
+   @Override
+   public void run() {
+      theHungarianMethod();
+   }
    public ArrayList<Edge> getM() {
       return _M;
+   }
+
+   public void setMsToSleep(int _msToSleep) {
+      this._msToSleep = _msToSleep;
+   }
+
+   public void setStepByStep(boolean _stepByStep) {
+      this._stepByStep = _stepByStep;
    }
 
    void resetAlgo() {
@@ -26,29 +40,27 @@ public class Hungarian {
    }
 
    /* finding the max match using the Hungarian Method */
-   public void theHungarianMethod(boolean stepByStep, int msToSleep) {
+   public void theHungarianMethod() {
       resetAlgo();
-      new SwingWorker() {
-         @Override
-         protected Object doInBackground() throws Exception {
-            ArrayList<Edge> newMatch = mAugmentingPath();
-            while (newMatch != null) {
-               if (stepByStep) {
-                  _gp.repaint();
-                  Thread.sleep(msToSleep);
-                  System.out.println(msToSleep);
-               }
-               addMatchToM(newMatch);
-               _Am = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_A));
-               _Bm = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_B));
-               newMatch = mAugmentingPath();
-            }
-            System.out.println(_M);
+      ArrayList<Edge> newMatch = mAugmentingPath();
+      while (newMatch != null) {
+         if (_stepByStep) {
             _gp.repaint();
-            System.out.println("end of algorithm");
-            return null;
+            try {
+               Thread.sleep(_msToSleep);
+            } catch (InterruptedException e) {
+
+            }
          }
-      }.execute();
+         addMatchToM(newMatch);
+         _Am = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_A));
+         _Bm = setUnsaturatedGroup(_graph.getGroup(Node.GroupEnum.GROUP_B));
+         newMatch = mAugmentingPath();
+      }
+      System.out.println(_M);
+      _gp.repaint();
+      System.out.println("end of algorithm");
+
    }
 
    /* setting a new group of all nodes that don't have any match in a specific group */
@@ -97,8 +109,8 @@ public class Hungarian {
    }
 
    /* Take BipartiteGraph and rebuild him as BipartiteDiGraph in specific order.
-   *  If the edge is part of the match, the direction is from group B to group A,
-   *  else the direction is from A to B*/
+    *  If the edge is part of the match, the direction is from group B to group A,
+    *  else the direction is from A to B*/
    private BipartiteDiGraph toDiGraph() {
       BipartiteDiGraph diGraph = new BipartiteDiGraph();
       for (Node node : _graph.getV()) {

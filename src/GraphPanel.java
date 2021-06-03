@@ -242,9 +242,13 @@ public class GraphPanel extends JPanel {
             t.start();
          } else if (e.getSource() == _help) {
             JOptionPane.showMessageDialog(null, """
-                        To add nodes click on the add buttons
+                        To add nodes click on the add buttons.
                         To add edge just choose two nodes in a different groups.
                         Right click on an edge will remove the edge.
+                        
+                        'Start Algorithm' will color all the matches in the graph.
+                        'Step By Step' will color the edges one at a time.
+                        The slider is the time to sleep between every step (ms).
 
                         Notice that right click on a crossroads will remove all edges.""",
                   "information", JOptionPane.INFORMATION_MESSAGE);

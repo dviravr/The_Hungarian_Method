@@ -2,6 +2,8 @@
 
 An implementation of The Hungarian Method on a bipartite graph.
 
+![image](https://user-images.githubusercontent.com/53183214/120596071-f65fd900-c44b-11eb-8cdf-1e18a0c4049c.png)
+
 ## How to run the algorithm:
 
 * This is your starting point:
@@ -22,7 +24,8 @@ An implementation of The Hungarian Method on a bipartite graph.
 * You can't connect a node to another node that is on the same group. 
 * When you remove node, you remove all the edges that connect to him.
 * Click on a crossroads will remove all the edges in that crossroads.
-* You can choose the time between every step by changing the slider value.
+* You can choose the time between every step by changing the slider value (ms). 
+* You have a help button.
 
 ### How to run:
 

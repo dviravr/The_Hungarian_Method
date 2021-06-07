@@ -5,8 +5,6 @@ An implementation of The Hungarian Method on a bipartite graph.
 ![image](https://user-images.githubusercontent.com/53183214/120596071-f65fd900-c44b-11eb-8cdf-1e18a0c4049c.png)
 
 ## How to run the algorithm:
-
-* This is your starting point:
   
 * To add Nodes click on the + button of every group.
 
